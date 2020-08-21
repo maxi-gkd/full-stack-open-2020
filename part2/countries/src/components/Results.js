@@ -1,7 +1,7 @@
 import React from 'react';
 import Country from './Country';
 
-const Results = ({ countries, filter }) => {
+const Results = ({ countries, filter, handleShowCountryButton }) => {
     const filteredCountries = countries.filter(country => country.name.includes(filter))
 
     return (
@@ -18,7 +18,8 @@ const Results = ({ countries, filter }) => {
                         <div>
                             <ul>
                                 {filteredCountries.map(country =>
-                                    <li key={country.name}>{country.name} </li>)}
+                                    <li key={country.name}>{country.name} <button onClick={(event) => {handleShowCountryButton(country.name)}}>show</button> </li>)
+                                }
                             </ul>
                         </div>
                     ) : <div>

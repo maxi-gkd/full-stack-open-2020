@@ -20,6 +20,10 @@ const App = () => {
     setFilter(event.target.value);
   }
 
+  const handleShowCountryButton = (name) => {
+    setFilter(name);
+  }
+
   return (
     <>
       <Filter
@@ -29,6 +33,7 @@ const App = () => {
       <Results
         countries = {countries}
         filter = {filter}
+        handleShowCountryButton = {handleShowCountryButton}
       />
     </>
   );
