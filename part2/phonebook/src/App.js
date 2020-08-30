@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [nameFilter, setFilter] = useState('')
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll()
@@ -16,6 +18,13 @@ const App = () => {
         setPersons(initial)
       })
   }, [])
+
+  const showNotification = (message) => {
+    setMessage(message);
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+  };
 
   const handleFilterInputChange = (event) => {
     setFilter(event.target.value);
@@ -44,13 +53,17 @@ const App = () => {
             setPersons(persons.map(p => p.id !== updated.id ? p : updated));
             setNewName('');
             setNewNumber('');
+
+            showNotification(` Updated ${newName}`);
           });
       }
     } else {
       personService.create(newPerson).then(created => {
         setPersons(persons.concat(created))
-        setNewName('')
-        setNewNumber('')
+        setNewName('');
+        setNewNumber('');
+
+        showNotification(` Added ${newName}`);
       });
     }
   }
@@ -77,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter
         filterInput={nameFilter}
         handleFilterInputChange={handleFilterInputChange}
