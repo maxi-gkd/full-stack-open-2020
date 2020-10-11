@@ -1,8 +1,12 @@
-DELETE  http://localhost:3001/api/persons/1
+DELETE  http://localhost:3001/api/persons/5f835e7186db4a1d461386cf
 
 ###
 
 GET http://localhost:3001/api/persons
+
+###
+
+GET http://localhost:3001/api/persons/5f835e7186db4a1d461386cf
 
 ###
 
@@ -13,3 +17,18 @@ Content-Type: application/json
     "name": "Lionel Messi",
     "number": "11-99980978"
 }
+
+###
+
+PUT http://localhost:3001/api/persons/5f835e7186db4a1d461386cf
+Content-Type: application/json
+
+{
+    "name": "Lionel Messii",
+    "number": "11-99980978"
+}
+
+
+###
+
+GET http://localhost:3001/info

@@ -30,40 +30,19 @@ const logFormat = (tokens, req, res) => {
 app.use(morgan(logFormat));
 
 
-let persons = [
-    {
-        "name": "Arto Hellas",
-        "number": "040-123456",
-        "id": 1
-    },
-    {
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523",
-        "id": 2
-    },
-    {
-        "name": "Dan Abramov",
-        "number": "12-43-234345",
-        "id": 3
-    },
-    {
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122",
-        "id": 4
-    }
-];
+// Route Handlers
 
-
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
     Person.find({})
-        .then((people) => {
-            res.json(people);
+        .then((persons) => {
+            res.json(persons);
         })
         .catch((error) => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id);
+app.get('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id;
+
     Person.findById(id)
         .then((person) => {
             if (person) {
@@ -76,7 +55,7 @@ app.get('/api/persons/:id', (req, res) => {
 
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const name = req.body.name;
     const number = req.body.number;
 
@@ -98,20 +77,67 @@ app.post('/api/persons', (req, res) => {
 
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id);
-    persons = persons.filter(p => p.id !== id);
+app.put('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id;
+    const name = req.body.name;
+    const number = req.body.number;
 
-    res.status(204).end();
+    if (!name || !number) {
+        return res.status(400).json({ error: 'Name and number are required' })
+    }
+
+    const person = {
+        name,
+        number
+    }
+
+    return Person.findByIdAndUpdate(req.params.id, person, { new: true })
+        .then(updatedPerson => {
+            res.json(updatedPerson)
+        })
+        .catch((error) => next(error))
 })
 
-app.get('/info', (req, res) => {
-    res.send(
-        `<div>
-        <div>Phonebook has info for ${persons.length} people</div> 
+app.delete('/api/persons/:id', (req, res, next) => {
+    const id = req.params.id;
+    Person.findByIdAndRemove(id)
+        .then((_) => {
+            res.status(204).end()
+        })
+        .catch(error => next(error))
+})
+
+app.get('/info', (req, res, next) => {
+    Person.countDocuments({}, (error, count) => {
+        res.send(
+            `<div>
+        <div>Phonebook has info for ${count} people</div> 
         <div>${new Date()}</div>
     </div>`);
+    })
+        .catch((error) => next(error))
 })
+
+
+// Error Middlewares
+
+const unknownEndpoint = (req, res, next) => {
+    res.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message)
+
+    if (error.name === 'CastError') {
+        return res.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 
 const PORT = process.env.PORT
