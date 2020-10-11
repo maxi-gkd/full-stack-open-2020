@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../phonebook-frontend/ && npm run build --prod && cp -r build ../phonebook-backend",
     "deploy": "cd ../../ && git push heroku `git subtree split --prefix part3/phonebook-backend master`:master --force",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint --fix ."
   },
   "author": "",
   "license": "ISC",
@@ -22,5 +23,8 @@
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.11.0"
   }
 }
