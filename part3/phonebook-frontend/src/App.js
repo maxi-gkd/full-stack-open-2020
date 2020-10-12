@@ -70,12 +70,16 @@ const App = () => {
           });
       }
     } else {
-      personService.create(newPerson).then(created => {
+      personService.create(newPerson)
+      .then(created => {
         setPersons(persons.concat(created))
         setNewName('');
         setNewNumber('');
         showNotification(` Added ${newName}`);
-      });
+      })
+      .catch(() => {
+        showError(`Error: The minimum length for Name are 3 characters and the minimum length for number are 8 characters`)
+    });
     }
   }
 

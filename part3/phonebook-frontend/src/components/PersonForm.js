@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 
 const PersonForm = ({ name, number, handleNameChange, handleNumberChange, handleAddPerson }) => (
     <form onSubmit={handleAddPerson}>
@@ -21,5 +22,13 @@ const PersonForm = ({ name, number, handleNameChange, handleNumberChange, handle
         </div>
     </form>
 );
+
+PersonForm.propTypes = {
+    name: PropTypes.string.isRequired,
+    number: PropTypes.number.isRequired,
+    handleNameChange: PropTypes.string.isRequired,
+    handleNumberChange: PropTypes.func.isRequired,
+    handleAddPerson: PropTypes.string.isRequired
+  }
 
 export default PersonForm;
